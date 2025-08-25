@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<title>EdVoice Advisor — AI Course Consultant</title>
+	<link rel="stylesheet" href="./styles.css" />
+	<link rel="manifest" href="./manifest.webmanifest">
+	<meta name="theme-color" content="#0a7cff" />
+</head>
+<body>
+	<header class="app-header">
+		<div class="brand">
+			<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M12 2C6.48 2 2 6.48 2 12v7a3 3 0 0 0 3 3h7c5.52 0 10-4.48 10-10S17.52 2 12 2Z" fill="url(#g)"/>
+				<path d="M7.5 13.5h2l2 3 2-6 1.5 3H17" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+				<defs>
+					<linearGradient id="g" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+						<stop stop-color="#0a7cff"/>
+						<stop offset="1" stop-color="#7b61ff"/>
+					</linearGradient>
+				</defs>
+			</svg>
+			<span>EdVoice Advisor</span>
+		</div>
+		<div class="header-actions">
+			<button id="btn-schedule" class="btn primary">Schedule Callback</button>
+			<div class="lang-toggle" title="Language">
+				<input type="checkbox" id="langToggle" aria-label="Switch language" />
+				<label for="langToggle"><span>EN</span><span>HI</span></label>
+			</div>
+		</div>
+	</header>
+
+	<main class="layout">
+		<section class="chat-panel" aria-label="Chat">
+			<div id="messages" class="messages" aria-live="polite"></div>
+			<div class="composer">
+				<button id="btn-mic" class="btn mic" aria-pressed="false" title="Hold to speak">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+						<path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M5 11v1a7 7 0 0 0 14 0v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+						<path d="M12 18v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					</svg>
+				</button>
+				<input id="textInput" class="text" type="text" placeholder="Type your question… / बोलिए…" autocomplete="off" />
+				<button id="btn-send" class="btn send" title="Send">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+						<path d="M3.4 20.6 20.8 12 3.4 3.4 6.8 12l-3.4 8.6Z" fill="currentColor"/>
+					</svg>
+				</button>
+			</div>
+		</section>
+		<aside class="info-panel" aria-label="Course Filters and Quick Actions">
+			<div class="card">
+				<h3>Quick Prompts</h3>
+				<div class="chips" id="quickPrompts"></div>
+			</div>
+			<div class="card">
+				<h3>Find Courses</h3>
+				<div class="filters">
+					<label class="field">
+						<span>Goal</span>
+						<select id="goalSelect">
+							<option value="job">Get job-ready</option>
+							<option value="switch">Career switch</option>
+							<option value="upskill">Upskill</option>
+						</select>
+					</label>
+					<label class="field">
+						<span>Category</span>
+						<select id="categorySelect">
+							<option value="any">Any</option>
+							<option value="data">Data & AI</option>
+							<option value="dev">Software & Web</option>
+							<option value="mba">Business & Management</option>
+							<option value="design">Design & UX</option>
+						</select>
+					</label>
+					<button id="btn-recommend" class="btn block">Recommend for me</button>
+				</div>
+			</div>
+			<div class="card" id="recommendationsCard" hidden>
+				<h3>Top Matches</h3>
+				<ul id="recoList" class="reco-list"></ul>
+			</div>
+		</aside>
+	</main>
+
+	<div id="callbackModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="cbTitle">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 id="cbTitle">Schedule a Callback</h3>
+				<button id="cbClose" class="btn icon" aria-label="Close">×</button>
+			</div>
+			<form id="cbForm" class="form">
+				<label class="field"><span>Your name</span><input id="cbName" required /></label>
+				<label class="field"><span>Phone</span><input id="cbPhone" required pattern="[0-9]{10}" placeholder="10-digit" /></label>
+				<label class="field"><span>Preferred time</span><input id="cbWhen" type="datetime-local" required /></label>
+				<div class="row">
+					<button type="submit" class="btn primary">Save</button>
+					<a id="cbIcs" class="btn" download="callback.ics">Download Calendar</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+	<script src="./data/courses.js" defer></script>
+	<script src="./app.js" defer></script>
+	<script>
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('./sw.js').catch(()=>{});
+		}
+	</script>
+</body>
+</html>
+
